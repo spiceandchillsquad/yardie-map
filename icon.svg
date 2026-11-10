@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#14120e"/>
+  <rect x="0" y="0" width="171" height="512" fill="#37b24d" opacity="0.9"/>
+  <rect x="171" y="0" width="170" height="512" fill="#e8b93c" opacity="0.9"/>
+  <rect x="341" y="0" width="171" height="512" fill="#e05252" opacity="0.9"/>
+  <path d="M256 96c-66 0-120 54-120 120 0 88 120 200 120 200s120-112 120-200c0-66-54-120-120-120zm0 168a48 48 0 1 1 0-96 48 48 0 0 1 0 96z" fill="#14120e"/>
+  <text x="256" y="252" text-anchor="middle" font-family="sans-serif" font-size="72" font-weight="bold" fill="#f2ecdd">Y</text>
+</svg>

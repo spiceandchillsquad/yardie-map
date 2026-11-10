@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>YARDIE MAP — 静岡レゲエイベント情報</title>
+<meta name="description" content="静岡県内のレゲエイベント情報をInstagram投稿から集めた非公式ガイド。">
+<meta name="theme-color" content="#14120e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+  :root{
+    --bg:#14120e;
+    --bg2:#1d1a13;
+    --panel:#221e15;
+    --panel2:#2a2519;
+    --line:#3a3423;
+    --text:#f2ecdd;
+    --muted:#b3a888;
+    --green:#37b24d;
+    --green-d:#1e6b31;
+    --gold:#e8b93c;
+    --gold-d:#7a5c10;
+    --red:#e05252;
+    --gray:#8a8578;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;
+    font-size:15px;
+    line-height:1.55;
+    padding-bottom:84px; /* bottom nav space */
+  }
+  a{color:var(--gold)}
+  /* ---------- header ---------- */
+  header.site{
+    background:linear-gradient(180deg,#1a1710,#14120e);
+    border-bottom:3px solid transparent;
+    border-image:linear-gradient(90deg,var(--green) 0 33%,var(--gold) 33% 66%,var(--red) 66% 100%) 1;
+    padding:16px 16px 12px;
+    position:sticky;top:0;z-index:30;
+  }
+  header.site .brand{
+    font-size:24px;font-weight:800;letter-spacing:.06em;
+  }
+  header.site .brand .y{color:var(--green)}
+  header.site .brand .m{color:var(--gold)}
+  header.site .sub{font-size:13px;color:var(--text);margin-top:1px}
+  header.site .meta{font-size:11.5px;color:var(--muted);margin-top:5px}
+  /* ---------- layout ---------- */
+  main{max-width:640px;margin:0 auto;padding:0 12px}
+  .view{display:none}
+  .view.active{display:block}
+  /* ---------- filters ---------- */
+  .filters{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:10px 12px;
+    margin:12px 0 4px;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .filters input[type="search"]{
+    width:100%;padding:10px 12px;border-radius:10px;
+    border:1px solid var(--line);background:var(--bg2);color:var(--text);
+    font-size:15px;appearance:none;-webkit-appearance:none;
+  }
+  .filters .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .filters select{
+    flex:1;min-width:120px;padding:9px 10px;border-radius:10px;
+    border:1px solid var(--line);background:var(--bg2);color:var(--text);font-size:14px;
+  }
+  .toggle{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--text);cursor:pointer;user-select:none}
+  .toggle input{width:18px;height:18px;accent-color:var(--green)}
+  .venue-chip{
+    display:none;align-items:center;gap:8px;
+    background:var(--panel2);border:1px solid var(--gold-d);
+    border-radius:999px;padding:5px 6px 5px 12px;font-size:13px;
+  }
+  .venue-chip.show{display:inline-flex}
+  .venue-chip button{
+    background:var(--gold);color:#1a1503;border:none;border-radius:999px;
+    font-size:12px;font-weight:700;padding:3px 10px;cursor:pointer;
+  }
+  .result-count{font-size:12.5px;color:var(--muted);margin:10px 2px 2px}
+  /* ---------- date headings & cards ---------- */
+  .date-head{
+    display:flex;align-items:baseline;gap:8px;
+    margin:18px 2px 8px;font-size:16px;font-weight:700;
+  }
+  .date-head .dow-sat{color:#7db4e8}
+  .date-head .dow-sun{color:var(--red)}
+  .date-head .cnt{font-size:12px;color:var(--muted);font-weight:400}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:4px solid var(--green);
+    border-radius:var(--radius);
+    padding:12px 14px;margin-bottom:10px;
+    cursor:pointer;
+  }
+  .card:active{background:var(--panel2)}
+  .card.genre-includes{border-left-color:var(--gold)}
+  .card.genre-out{border-left-color:var(--gray)}
+  .card h3{font-size:16.5px;font-weight:700;line-height:1.35;margin-bottom:5px}
+  .card .venue-line{font-size:13.5px;color:var(--text)}
+  .card .venue-line .area{color:var(--muted)}
+  .card .meta-line{font-size:13px;color:var(--muted);margin-top:2px}
+  .badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .badge{
+    font-size:11px;font-weight:700;border-radius:999px;padding:2.5px 9px;line-height:1.5;
+  }
+  .badge.reggae{background:var(--green-d);color:#d9f5df}
+  .badge.includes{background:var(--gold-d);color:#ffeec2}
+  .badge.out{background:#3d3a33;color:#cfccc2}
+  .badge.posts{background:#33302a;color:#e6e1d2;border:1px solid var(--line)}
+  .badge.outpref{background:none;border:1px solid var(--red);color:#f0a3a3}
+  .badge.reggae-venue{background:none;border:1px solid var(--green);color:#9fe0ac}
+  .empty{
+    text-align:center;color:var(--muted);padding:36px 16px;font-size:14px;
+  }
+  /* ---------- calendar ---------- */
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin:16px 2px 10px}
+  .cal-head .ym{font-size:17px;font-weight:700}
+  .cal-head button{
+    background:var(--panel);border:1px solid var(--line);color:var(--text);
+    border-radius:10px;padding:7px 14px;font-size:14px;cursor:pointer;
+  }
+  table.cal{width:100%;border-collapse:collapse;table-layout:fixed}
+  table.cal th{font-size:11.5px;color:var(--muted);font-weight:600;padding:4px 0}
+  table.cal th.sun{color:var(--red)}
+  table.cal th.sat{color:#7db4e8}
+  table.cal td{
+    text-align:center;vertical-align:top;height:52px;padding:4px 0 2px;
+    border-top:1px solid var(--line);font-size:13.5px;cursor:pointer;position:relative;
+  }
+  table.cal td.dim{color:#5c574a;cursor:default}
+  table.cal td.today .dnum{
+    display:inline-block;min-width:24px;line-height:24px;border-radius:999px;
+    border:1px solid var(--gold);color:var(--gold);font-weight:700;
+  }
+  table.cal td.selected{background:var(--panel2)}
+  table.cal td .dots{font-size:10px;line-height:1.2;margin-top:2px;color:var(--gold);letter-spacing:1px}
+  table.cal td .cnt{font-size:10.5px;color:var(--muted)}
+  .cal-day-title{margin:16px 2px 8px;font-size:15px;font-weight:700}
+  /* ---------- venues ---------- */
+  .venue-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:12px 14px;margin-bottom:10px;cursor:pointer;
+  }
+  .venue-card:active{background:var(--panel2)}
+  .venue-card h3{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .venue-card .addr{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .venue-card .vmeta{display:flex;gap:10px;align-items:center;margin-top:7px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+  .venue-card .vmeta a{font-size:12.5px}
+  /* ---------- bottom nav ---------- */
+  nav.tabs{
+    position:fixed;left:0;right:0;bottom:0;z-index:40;
+    background:rgba(20,18,14,.97);
+    border-top:1px solid var(--line);
+    display:flex;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  nav.tabs button{
+    flex:1;background:none;border:none;color:var(--muted);
+    font-size:12px;padding:9px 0 10px;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+  }
+  nav.tabs button .ic{font-size:19px;line-height:1}
+  nav.tabs button.active{color:var(--gold);font-weight:700}
+  /* ---------- modal ---------- */
+  .modal-back{
+    position:fixed;inset:0;background:rgba(0,0,0,.66);z-index:50;
+    display:none;align-items:flex-end;justify-content:center;
+  }
+  .modal-back.open{display:flex}
+  .modal{
+    background:var(--bg2);width:100%;max-width:640px;max-height:88vh;overflow-y:auto;
+    border-radius:18px 18px 0 0;border-top:3px solid var(--gold);
+    padding:18px 18px calc(20px + env(safe-area-inset-bottom));
+  }
+  .modal .close-row{display:flex;justify-content:flex-end}
+  .modal .close-row button{
+    background:var(--panel2);border:1px solid var(--line);color:var(--text);
+    border-radius:999px;width:34px;height:34px;font-size:16px;cursor:pointer;
+  }
+  .modal h2{font-size:20px;font-weight:800;line-height:1.35;margin:2px 0 8px}
+  .modal dl{margin-top:6px}
+  .modal .kv{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .modal .kv dt{flex:0 0 64px;color:var(--muted);font-size:12.5px;padding-top:2px}
+  .modal .kv dd{flex:1}
+  .modal .artists{white-space:pre-wrap}
+  .modal .note-corrected{font-size:12px;color:var(--gold);margin-top:3px}
+  .modal h4{font-size:13px;color:var(--muted);margin:14px 0 6px;font-weight:600}
+  .modal .src-list{list-style:none}
+  .modal .src-list li{padding:5px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .modal .src-list li:last-child{border-bottom:none}
+  .modal .ig-embed-wrap{margin:10px 0 16px}
+  .modal .ig-embed-wrap .instagram-media{max-width:100%!important;min-width:0!important;width:100%!important}
+  .modal .ig-open{display:inline-block;margin-top:8px;font-size:14px}
+  .map-link{display:inline-block;margin-top:6px;font-size:13.5px}
+  /* ---------- footer ---------- */
+  footer.site{
+    max-width:640px;margin:26px auto 0;padding:14px 16px 8px;
+    border-top:1px solid var(--line);
+    font-size:12px;color:var(--muted);line-height:1.7;
+  }
+  .loading,.load-error{text-align:center;color:var(--muted);padding:40px 16px}
+  .load-error{color:#f0a3a3}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="brand"><span class="y">YARDIE</span> <span class="m">MAP</span></div>
+  <div class="sub">静岡レゲエイベント情報</div>
+  <div class="meta" id="header-meta">データを読み込み中…</div>
+</header>
+
+<main>
+  <!-- ======== LIST VIEW ======== -->
+  <section class="view active" id="view-list">
+    <div class="filters">
+      <input type="search" id="f-keyword" placeholder="検索（タイトル・会場・出演者）" autocomplete="off">
+      <div class="row">
+        <select id="f-area" aria-label="エリアで絞り込み"></select>
+        <select id="f-genre" aria-label="ジャンルで絞り込み">
+          <option value="">ジャンル：すべて</option>
+          <option value="reggae">レゲエ中心</option>
+          <option value="includes">レゲエ含む</option>
+          <option value="out">他ジャンル</option>
+        </select>
+      </div>
+      <div class="row">
+        <label class="toggle"><input type="checkbox" id="f-inpref"> 県内のみ表示</label>
+        <span class="venue-chip" id="venue-chip">
+          <span id="venue-chip-label"></span>
+          <button type="button" id="venue-chip-clear">解除</button>
+        </span>
+      </div>
+    </div>
+    <div class="result-count" id="result-count"></div>
+    <div id="event-list"></div>
+  </section>
+
+  <!-- ======== CALENDAR VIEW ======== -->
+  <section class="view" id="view-calendar">
+    <div class="cal-head">
+      <button type="button" id="cal-prev">‹ 前月</button>
+      <div class="ym" id="cal-ym"></div>
+      <button type="button" id="cal-next">次月 ›</button>
+    </div>
+    <div id="cal-grid"></div>
+    <div class="cal-day-title" id="cal-day-title"></div>
+    <div id="cal-day-list"></div>
+  </section>
+
+  <!-- ======== VENUES VIEW ======== -->
+  <section class="view" id="view-venues">
+    <div class="result-count" id="venue-count"></div>
+    <div id="venue-list"></div>
+  </section>
+
+  <div class="loading" id="loading">読み込み中…</div>
+  <div class="load-error" id="load-error" style="display:none">データを読み込めませんでした。通信環境をご確認のうえ、再読み込みしてください。</div>
+</main>
+
+<footer class="site">
+  情報はInstagram投稿をもとに作成しています。内容が変更になる場合がありますので、最新情報は出典のInstagram投稿でご確認ください。<br>
+  YARDIE MAP — 静岡レゲエイベント情報（非公式ガイド）
+</footer>
+
+<nav class="tabs" aria-label="ビュー切替">
+  <button type="button" data-view="list" class="active"><span class="ic">🎶</span>イベント</button>
+  <button type="button" data-view="calendar"><span class="ic">📅</span>カレンダー</button>
+  <button type="button" data-view="venues"><span class="ic">📍</span>会場</button>
+</nav>
+
+<div class="modal-back" id="modal-back">
+  <div class="modal" role="dialog" aria-modal="true" id="modal"></div>
+</div>
+
+<script>
+"use strict";
+/* =============== state =============== */
+var DATA = null;            // {generatedAt, events, venues}
+var venueByName = {};       // venue name -> venue object
+var state = {
+  keyword: "",
+  area: "",
+  genre: "",
+  inPrefOnly: false,
+  venueName: null,          // venue filter from venue list
+  calYear: null, calMonth: null, // 0-based month
+  calSelected: null         // 'YYYY-MM-DD'
+};
+
+/* =============== helpers (all DOM building via createElement/textContent) =============== */
+function el(tag, cls, text){
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined && text !== null) n.textContent = text;
+  return n;
+}
+function fmtDateHead(dateStr, weekday){
+  var p = dateStr.split("-");
+  var m = parseInt(p[1], 10), d = parseInt(p[2], 10);
+  return m + "/" + d + "(" + weekday + ")";
+}
+function dowClass(weekday){
+  if (weekday === "土") return "dow-sat";
+  if (weekday === "日") return "dow-sun";
+  return "";
+}
+function isUpcoming(ev){
+  return ev.date >= DATA.generatedAt;
+}
+function mapsUrl(ev){
+  var v = venueByName[ev.venue];
+  if (v && v.lat !== null && v.lat !== undefined && v.lng !== null && v.lng !== undefined){
+    return "https://www.google.com/maps/search/?api=1&query=" + v.lat + "," + v.lng;
+  }
+  var q = ev.address ? ev.address : (ev.venue + (ev.area ? " " + ev.area : ""));
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+}
+function venueMapsUrl(v){
+  if (v.lat !== null && v.lat !== undefined && v.lng !== null && v.lng !== undefined){
+    return "https://www.google.com/maps/search/?api=1&query=" + v.lat + "," + v.lng;
+  }
+  var q = v.address ? v.address : v.name;
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+}
+
+/* =============== event card =============== */
+function makeBadges(ev, parent){
+  var wrap = el("div", "badges");
+  wrap.appendChild(el("span", "badge " + ev.genreKey, ev.genre));
+  if (ev.postCount && ev.postCount > 1){
+    wrap.appendChild(el("span", "badge posts", "投稿" + ev.postCount + "件"));
+  }
+  if (ev.outOfPrefecture){
+    wrap.appendChild(el("span", "badge outpref", "県外"));
+  }
+  parent.appendChild(wrap);
+}
+function makeCard(ev){
+  var card = el("article", "card genre-" + ev.genreKey);
+  card.appendChild(el("h3", null, ev.title));
+  var vl = el("div", "venue-line");
+  vl.appendChild(document.createTextNode("📍 " + ev.venue));
+  if (ev.area) vl.appendChild(el("span", "area", "（" + ev.area + "）"));
+  card.appendChild(vl);
+  var bits = [];
+  if (ev.startTime) bits.push("🕗 " + ev.startTime);
+  if (ev.price) bits.push("🎫 " + ev.price);
+  if (bits.length) card.appendChild(el("div", "meta-line", bits.join("　")));
+  makeBadges(ev, card);
+  card.addEventListener("click", function(){ openDetail(ev); });
+  return card;
+}
+
+/* =============== list view =============== */
+function filteredEvents(){
+  var kw = state.keyword.trim().toLowerCase();
+  return DATA.events.filter(function(ev){
+    if (!isUpcoming(ev)) return false;
+    if (state.venueName && ev.venue !== state.venueName) return false;
+    if (state.area && ev.area !== state.area) return false;
+    if (state.genre && ev.genreKey !== state.genre) return false;
+    if (state.inPrefOnly && ev.outOfPrefecture) return false;
+    if (kw){
+      var hay = (ev.title + " " + ev.venue + " " + (ev.artists || "") + " " + (ev.area || "")).toLowerCase();
+      if (hay.indexOf(kw) === -1) return false;
+    }
+    return true;
+  }).sort(function(a, b){
+    if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+    return (a.startTime || "") < (b.startTime || "") ? -1 : 1;
+  });
+}
+function renderList(){
+  var list = document.getElementById("event-list");
+  list.textContent = "";
+  var evs = filteredEvents();
+  document.getElementById("result-count").textContent =
+    "今後のイベント " + evs.length + " 件";
+  if (!evs.length){
+    list.appendChild(el("div", "empty", "条件に合うイベントが見つかりませんでした。"));
+    return;
+  }
+  var lastDate = null, groupCount = 0, head = null;
+  evs.forEach(function(ev){
+    if (ev.date !== lastDate){
+      lastDate = ev.date;
+      groupCount = evs.filter(function(x){ return x.date === ev.date; }).length;
+      head = el("div", "date-head");
+      var label = el("span", dowClass(ev.weekday), fmtDateHead(ev.date, ev.weekday));
+      head.appendChild(label);
+      head.appendChild(el("span", "cnt", groupCount + "件"));
+      list.appendChild(head);
+    }
+    list.appendChild(makeCard(ev));
+  });
+}
+
+/* =============== detail modal =============== */
+function kv(dl, label, valueNode){
+  var row = el("div", "kv");
+  row.appendChild(el("dt", null, label));
+  var dd = el("dd");
+  if (typeof valueNode === "string") dd.textContent = valueNode;
+  else dd.appendChild(valueNode);
+  row.appendChild(dd);
+  dl.appendChild(row);
+}
+function openDetail(ev){
+  var modal = document.getElementById("modal");
+  modal.textContent = "";
+
+  var closeRow = el("div", "close-row");
+  var closeBtn = el("button", null, "✕");
+  closeBtn.type = "button";
+  closeBtn.setAttribute("aria-label", "閉じる");
+  closeBtn.addEventListener("click", closeDetail);
+  closeRow.appendChild(closeBtn);
+  modal.appendChild(closeRow);
+
+  modal.appendChild(el("h2", null, ev.title));
+  makeBadges(ev, modal);
+
+  var dl = el("dl");
+  var dateLine = fmtDateHead(ev.date, ev.weekday) + " " +
+    ev.date.split("-")[0] + "年";
+  kv(dl, "日付", dateLine);
+  if (ev.startTime) kv(dl, "時間", ev.startTime);
+  var venueLine = ev.venue + (ev.area ? "（" + ev.area + "）" : "");
+  kv(dl, "会場", venueLine);
+  if (ev.price){
+    var priceWrap = el("span");
+    priceWrap.appendChild(document.createTextNode(ev.price));
+    if (ev.priceCorrected){
+      priceWrap.appendChild(el("div", "note-corrected", "※料金は訂正済みの情報です"));
+    }
+    kv(dl, "料金", priceWrap);
+  }
+  kv(dl, "ジャンル", ev.genre);
+  if (ev.artists) kv(dl, "出演者", ev.artists);
+  if (ev.address){
+    var addrWrap = el("span");
+    addrWrap.appendChild(document.createTextNode(ev.address));
+    addrWrap.appendChild(document.createElement("br"));
+    var a = el("a", "map-link", "🗺 Googleマップで開く");
+    a.href = mapsUrl(ev);
+    a.target = "_blank"; a.rel = "noopener";
+    addrWrap.appendChild(a);
+    kv(dl, "住所", addrWrap);
+  } else {
+    var a2 = el("a", "map-link", "🗺 Googleマップで開く（会場名で検索）");
+    a2.href = mapsUrl(ev);
+    a2.target = "_blank"; a2.rel = "noopener";
+    kv(dl, "住所", a2);
+  }
+  kv(dl, "投稿数", "Instagram投稿 " + ev.postCount + " 件から作成");
+  modal.appendChild(dl);
+
+  if (ev.sources && ev.sources.length){
+    modal.appendChild(el("h4", null, "出典（Instagram投稿）"));
+    ev.sources.forEach(function(s){
+      if (!/^https:\/\/www\.instagram\.com\/(p|reel)\/[\w-]+\/?$/.test(s.url)) return;
+      var wrap = el("div", "ig-embed-wrap");
+      var bq = document.createElement("blockquote");
+      bq.className = "instagram-media";
+      bq.setAttribute("data-instgrm-permalink", s.url);
+      bq.setAttribute("data-instgrm-version", "14");
+      bq.style.margin = "0 auto";
+      wrap.appendChild(bq);
+      var open = el("a", "ig-open", "📷 @" + s.username + " の投稿をInstagramで開く");
+      open.href = s.url;
+      open.target = "_blank"; open.rel = "noopener";
+      wrap.appendChild(open);
+      modal.appendChild(wrap);
+    });
+    loadInstagramEmbed();
+  }
+
+  document.getElementById("modal-back").classList.add("open");
+  document.body.style.overflow = "hidden";
+  modal.scrollTop = 0;
+}
+function closeDetail(){
+  document.getElementById("modal-back").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+/* =============== calendar view =============== */
+function eventsByDate(){
+  var map = {};
+  DATA.events.forEach(function(ev){
+    if (!isUpcoming(ev)) return;
+    if (!map[ev.date]) map[ev.date] = [];
+    map[ev.date].push(ev);
+  });
+  return map;
+}
+function renderCalendar(){
+  var y = state.calYear, m = state.calMonth;
+  document.getElementById("cal-ym").textContent = y + "年" + (m + 1) + "月";
+  var grid = document.getElementById("cal-grid");
+  grid.textContent = "";
+  var byDate = eventsByDate();
+
+  var table = el("table", "cal");
+  var thead = el("thead");
+  var tr = el("tr");
+  ["日", "月", "火", "水", "木", "金", "土"].forEach(function(w, i){
+    tr.appendChild(el("th", i === 0 ? "sun" : (i === 6 ? "sat" : ""), w));
+  });
+  thead.appendChild(tr);
+  table.appendChild(thead);
+
+  var tbody = el("tbody");
+  var first = new Date(y, m, 1);
+  var startDow = first.getDay();
+  var daysInMonth = new Date(y, m + 1, 0).getDate();
+  var daysInPrev = new Date(y, m, 0).getDate();
+  var todayStr = DATA.generatedAt;
+  var cellCount = Math.ceil((startDow + daysInMonth) / 7) * 7;
+
+  var row = el("tr");
+  for (var i = 0; i < cellCount; i++){
+    if (i > 0 && i % 7 === 0){ tbody.appendChild(row); row = el("tr"); }
+    var td = el("td");
+    var dayNum, dateStr = null, dim = false;
+    if (i < startDow){ dayNum = daysInPrev - startDow + 1 + i; dim = true; }
+    else if (i >= startDow + daysInMonth){ dayNum = i - startDow - daysInMonth + 1; dim = true; }
+    else {
+      dayNum = i - startDow + 1;
+      dateStr = y + "-" + String(m + 1).padStart(2, "0") + "-" + String(dayNum).padStart(2, "0");
+    }
+    if (dim){
+      td.className = "dim";
+      td.appendChild(el("span", "dnum", String(dayNum)));
+    } else {
+      if (dateStr === todayStr) td.classList.add("today");
+      if (dateStr === state.calSelected) td.classList.add("selected");
+      td.appendChild(el("span", "dnum", String(dayNum)));
+      var evs = byDate[dateStr];
+      if (evs && evs.length){
+        var dots = "";
+        for (var k = 0; k < Math.min(evs.length, 3); k++) dots += "●";
+        td.appendChild(el("div", "dots", dots));
+        td.appendChild(el("div", "cnt", evs.length + "件"));
+      }
+      (function(ds){
+        td.addEventListener("click", function(){
+          state.calSelected = ds;
+          renderCalendar();
+        });
+      })(dateStr);
+    }
+    row.appendChild(td);
+  }
+  tbody.appendChild(row);
+  table.appendChild(tbody);
+  grid.appendChild(table);
+
+  renderCalDayList(byDate);
+}
+function renderCalDayList(byDate){
+  var title = document.getElementById("cal-day-title");
+  var list = document.getElementById("cal-day-list");
+  list.textContent = "";
+  if (!state.calSelected){
+    title.textContent = "";
+    list.appendChild(el("div", "empty", "日付をタップすると、その日のイベントが表示されます。"));
+    return;
+  }
+  var evs = (byDate[state.calSelected] || []).slice().sort(function(a, b){
+    return (a.startTime || "") < (b.startTime || "") ? -1 : 1;
+  });
+  var p = state.calSelected.split("-");
+  var sample = evs[0];
+  var wd = sample ? sample.weekday : ["日", "月", "火", "水", "木", "金", "土"][new Date(state.calSelected + "T00:00:00").getDay()];
+  title.textContent = parseInt(p[1], 10) + "/" + parseInt(p[2], 10) + "(" + wd + ") のイベント";
+  if (!evs.length){
+    list.appendChild(el("div", "empty", "この日のイベントはありません。"));
+    return;
+  }
+  evs.forEach(function(ev){ list.appendChild(makeCard(ev)); });
+}
+
+/* =============== venues view =============== */
+function renderVenues(){
+  var wrap = document.getElementById("venue-list");
+  wrap.textContent = "";
+  var venues = DATA.venues.slice().sort(function(a, b){
+    return (b.upcomingCount || 0) - (a.upcomingCount || 0) || a.name.localeCompare(b.name);
+  });
+  document.getElementById("venue-count").textContent = "会場 " + venues.length + " 件（タップでイベントを絞り込み）";
+  venues.forEach(function(v){
+    var card = el("article", "venue-card");
+    var h = el("h3", null, v.name);
+    card.appendChild(h);
+    if (v.area) card.appendChild(el("div", "addr", "エリア：" + v.area));
+    if (v.address) card.appendChild(el("div", "addr", v.address));
+    var meta = el("div", "vmeta");
+    if (v.isReggaeVenue){
+      meta.appendChild(el("span", "badge reggae-venue", "レゲエの店"));
+    }
+    meta.appendChild(el("span", null, "今後の開催 " + (v.upcomingCount || 0) + " 件"));
+    var a = el("a", null, "🗺 マップ");
+    a.href = venueMapsUrl(v);
+    a.target = "_blank"; a.rel = "noopener";
+    a.addEventListener("click", function(e){ e.stopPropagation(); });
+    meta.appendChild(a);
+    card.appendChild(meta);
+    card.addEventListener("click", function(){
+      state.venueName = v.name;
+      updateVenueChip();
+      renderList();
+      switchView("list");
+      window.scrollTo(0, 0);
+    });
+    wrap.appendChild(card);
+  });
+}
+function updateVenueChip(){
+  var chip = document.getElementById("venue-chip");
+  if (state.venueName){
+    document.getElementById("venue-chip-label").textContent = "会場：" + state.venueName;
+    chip.classList.add("show");
+  } else {
+    chip.classList.remove("show");
+  }
+}
+
+/* =============== view switching =============== */
+function switchView(name){
+  document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
+  document.getElementById("view-" + name).classList.add("active");
+  document.querySelectorAll("nav.tabs button").forEach(function(b){
+    b.classList.toggle("active", b.getAttribute("data-view") === name);
+  });
+}
+
+/* =============== init =============== */
+function init(data){
+  DATA = data;
+  DATA.venues.forEach(function(v){ venueByName[v.name] = v; });
+
+  document.getElementById("header-meta").textContent =
+    "📅 " + DATA.generatedAt + " 更新 ／ 出典：Instagram投稿（投稿" +
+    DATA.events.reduce(function(s, e){ return s + (e.postCount || 0); }, 0) + "件）";
+
+  // area select (from events, in-prefecture areas first by count)
+  var areaSel = document.getElementById("f-area");
+  areaSel.appendChild(el("option", null, "エリア：すべて"));
+  areaSel.options[0].value = "";
+  var areas = [];
+  DATA.events.forEach(function(ev){ if (ev.area && areas.indexOf(ev.area) === -1) areas.push(ev.area); });
+  areas.sort();
+  areas.forEach(function(a){
+    var o = el("option", null, a);
+    o.value = a;
+    areaSel.appendChild(o);
+  });
+
+  // calendar initial month = month of generatedAt
+  var gp = DATA.generatedAt.split("-");
+  state.calYear = parseInt(gp[0], 10);
+  state.calMonth = parseInt(gp[1], 10) - 1;
+
+  renderList();
+  renderCalendar();
+  renderVenues();
+  document.getElementById("loading").style.display = "none";
+}
+
+document.getElementById("f-keyword").addEventListener("input", function(e){
+  state.keyword = e.target.value; renderList();
+});
+document.getElementById("f-area").addEventListener("change", function(e){
+  state.area = e.target.value; renderList();
+});
+document.getElementById("f-genre").addEventListener("change", function(e){
+  state.genre = e.target.value; renderList();
+});
+document.getElementById("f-inpref").addEventListener("change", function(e){
+  state.inPrefOnly = e.target.checked; renderList();
+});
+document.getElementById("venue-chip-clear").addEventListener("click", function(){
+  state.venueName = null; updateVenueChip(); renderList();
+});
+document.querySelectorAll("nav.tabs button").forEach(function(b){
+  b.addEventListener("click", function(){ switchView(b.getAttribute("data-view")); });
+});
+document.getElementById("cal-prev").addEventListener("click", function(){
+  state.calMonth--; if (state.calMonth < 0){ state.calMonth = 11; state.calYear--; }
+  renderCalendar();
+});
+document.getElementById("cal-next").addEventListener("click", function(){
+  state.calMonth++; if (state.calMonth > 11){ state.calMonth = 0; state.calYear++; }
+  renderCalendar();
+});
+document.getElementById("modal-back").addEventListener("click", function(e){
+  if (e.target === e.currentTarget) closeDetail();
+});
+document.addEventListener("keydown", function(e){
+  if (e.key === "Escape") closeDetail();
+});
+
+/* =============== Instagram embed =============== */
+function loadInstagramEmbed(){
+  function process(){
+    if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
+  }
+  if (window.instgrm && window.instgrm.Embeds){ process(); return; }
+  if (document.querySelector('script[src*="instagram.com/embed.js"]')){
+    var t = setInterval(function(){
+      if (window.instgrm && window.instgrm.Embeds){ clearInterval(t); process(); }
+    }, 300);
+    setTimeout(function(){ clearInterval(t); }, 8000);
+    return;
+  }
+  var s = document.createElement("script");
+  s.async = true;
+  s.src = "https://www.instagram.com/embed.js";
+  s.onload = process;
+  document.body.appendChild(s);
+}
+
+fetch("data/data.json", {cache: "no-cache"})
+  .then(function(r){ if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(init)
+  .catch(function(){
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("load-error").style.display = "block";
+  });
+
+if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
+  navigator.serviceWorker.register("sw.js").catch(function(){});
+}
+</script>
+</body>
+</html>
