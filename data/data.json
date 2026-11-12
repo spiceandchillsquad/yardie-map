@@ -1,30 +1,7 @@
 {
- "generatedAt": "2026-11-11T16:22:59+09:00",
- "today": "2026-11-11",
+ "generatedAt": "2026-11-12T22:49:04+09:00",
+ "today": "2026-11-12",
  "events": [
-  {
-   "id": "ev155",
-   "title": "SWEET SWEET WEDNESDAY",
-   "date": "2026-11-11",
-   "weekday": "水",
-   "startTime": "START 20:00",
-   "price": "ENTRANCE FREE",
-   "priceCorrected": false,
-   "genre": "レゲエ中心",
-   "genreKey": "reggae",
-   "venue": "LICOMO",
-   "area": "三島",
-   "address": "静岡県三島市広小路町9-13 野村ビル1F",
-   "artists": "MUNCHIES DISCO, GNARLY from BROTHERHOOD, CHAN-D from Coelacanth, COOKING MELODY",
-   "postCount": 1,
-   "outOfPrefecture": false,
-   "sources": [
-    {
-     "username": "spiceandchillsquad",
-     "url": "https://www.instagram.com/p/DfkC2OADjmU/"
-    }
-   ]
-  },
   {
    "id": "ev22",
    "title": "SHATTA SHATTA 2026",
@@ -39,7 +16,7 @@
    "area": "三島",
    "address": "静岡県三島市広小路町9-13 野村ビル1階",
    "artists": "LEF-T from RAFUU, YAS IS OVER, DJ TEK from RAFUU / REALIZE intl, cooking melody, GNARLY from BROTHER HOOD, DJ MAI, DJ TANA, AK1 from Munchies Disco, CHAN-D from coelacanth",
-   "postCount": 3,
+   "postCount": 4,
    "outOfPrefecture": false,
    "sources": [
     {
@@ -53,6 +30,10 @@
     {
      "username": "spiceandchillsquad",
      "url": "https://www.instagram.com/p/DfkA7eOjprs/"
+    },
+    {
+     "username": "ip_aka_chan__d",
+     "url": "https://www.instagram.com/p/DdSuC82PeYH/"
     }
    ]
   },
@@ -70,7 +51,7 @@
    "area": "三島",
    "address": "静岡県三島市広小路町9-13 野村ビル1階",
    "artists": "HIGHLIFE",
-   "postCount": 5,
+   "postCount": 6,
    "outOfPrefecture": false,
    "sources": [
     {
@@ -92,6 +73,10 @@
     {
      "username": "tegu0421",
      "url": "https://www.instagram.com/p/DdlJDfGRq5J/"
+    },
+    {
+     "username": "spiceandchillsquad",
+     "url": "https://www.instagram.com/p/Dfj8cY9k7QZ/"
     }
    ]
   },
@@ -132,7 +117,7 @@
    "area": "三島",
    "address": "静岡県三島市本町11-7",
    "artists": "G.B.C CAMP, KBOO, ILLBONG, R8 Rico, PURGE, 39, BOPCAT Jr., SOY from HUMANCREST, SAGARAggaBASS, BROTHERHOOD with SOUNDSYSTEM, TOBBY",
-   "postCount": 3,
+   "postCount": 4,
    "outOfPrefecture": false,
    "sources": [
     {
@@ -146,6 +131,10 @@
     {
      "username": "licomo_mishima",
      "url": "https://www.instagram.com/p/DdbGB6FDw-X/"
+    },
+    {
+     "username": "spiceandchillsquad",
+     "url": "https://www.instagram.com/p/Dfj8cY9k7QZ/"
     }
    ]
   },
@@ -186,7 +175,7 @@
    "area": null,
    "address": "静岡県静岡市葵区常磐町3丁目2-12 タケジビル2F",
    "artists": "SHUNSUKE from MAJESTIC, KIBA-K, IKE-CHANG from DO NOT EAT, TOBBY",
-   "postCount": 2,
+   "postCount": 3,
    "outOfPrefecture": false,
    "sources": [
     {
@@ -196,6 +185,10 @@
     {
      "username": "szokshantytown",
      "url": "https://www.instagram.com/p/DfgpcZJnReN/"
+    },
+    {
+     "username": "szokshantytown",
+     "url": "https://www.instagram.com/p/DfmVl4CEisJ/"
     }
    ]
   },
@@ -269,72 +262,6 @@
    ]
   },
   {
-   "id": "ev6",
-   "title": "DOON VYBZ Vol.2",
-   "date": "2026-11-28",
-   "weekday": "土",
-   "startTime": "OPEN 22:00 - CLOSE 5:00",
-   "price": "TICKET ¥2,500 + 1DRINK ¥500",
-   "priceCorrected": false,
-   "genre": "レゲエ含む",
-   "genreKey": "includes",
-   "venue": "CORNER sound bar",
-   "area": "沼津",
-   "address": "静岡県沼津市高島町6-10 高島ビル4F",
-   "artists": "DJ Moe Chan Doon",
-   "postCount": 2,
-   "outOfPrefecture": false,
-   "sources": [
-    {
-     "username": "mo_e.0817",
-     "url": "https://www.instagram.com/p/DfH5vToTbGZ/"
-    },
-    {
-     "username": "corner_sound_bar",
-     "url": "https://www.instagram.com/p/DevNKHZB74S/"
-    }
-   ]
-  },
-  {
-   "id": "ev14",
-   "title": "HIGH TIDE OR LOW TIDE",
-   "date": "2026-11-28",
-   "weekday": "土",
-   "startTime": "Bar Open 20:00 Event Start 22:00",
-   "price": "前売 ¥3,500 + 1Drink Ticket(¥500) / 当日 ¥4,500 + 1Drink Ticket(¥500)",
-   "priceCorrected": false,
-   "genre": "レゲエ中心",
-   "genreKey": "reggae",
-   "venue": "SHANTY TOWN",
-   "area": "静岡",
-   "address": "静岡県静岡市葵区常磐町3丁目2-12 タケジビル2F",
-   "artists": "ZENDAMAN w/HIIRO, TOMMYmr.mention, REVOLUTION GANG (CHAKA & KICK QUICKLY), SAGARAgga BASS (ISSEI), KIBA-K, GNARLY from BROTHERHOOD, TOBBY",
-   "postCount": 5,
-   "outOfPrefecture": false,
-   "sources": [
-    {
-     "username": "tobby_free",
-     "url": "https://www.instagram.com/p/DezLD69PZvS/"
-    },
-    {
-     "username": "szokshantytown",
-     "url": "https://www.instagram.com/p/DfTzcQrHXks/"
-    },
-    {
-     "username": "gnarly_2000",
-     "url": "https://www.instagram.com/p/DfE3r9OSp_u/"
-    },
-    {
-     "username": "szokshantytown",
-     "url": "https://www.instagram.com/p/DewvkSsEmzN/"
-    },
-    {
-     "username": "szokshantytown",
-     "url": "https://www.instagram.com/p/DfgpcZJnReN/"
-    }
-   ]
-  },
-  {
    "id": "ev136",
    "title": "コンチペッパー vol.18 『ONE BLOOD』",
    "date": "2026-11-28",
@@ -358,6 +285,84 @@
    ]
   },
   {
+   "id": "ev14",
+   "title": "HIGH TIDE OR LOW TIDE",
+   "date": "2026-11-28",
+   "weekday": "土",
+   "startTime": "Bar Open 20:00 Event Start 22:00",
+   "price": "前売 ¥3,500 + 1Drink Ticket(¥500) / 当日 ¥4,500 + 1Drink Ticket(¥500)",
+   "priceCorrected": false,
+   "genre": "レゲエ中心",
+   "genreKey": "reggae",
+   "venue": "SHANTY TOWN",
+   "area": "静岡",
+   "address": "静岡県静岡市葵区常磐町3丁目2-12 タケジビル2F",
+   "artists": "ZENDAMAN w/HIIRO, TOMMYmr.mention, REVOLUTION GANG (CHAKA & KICK QUICKLY), SAGARAgga BASS (ISSEI), KIBA-K, GNARLY from BROTHERHOOD, TOBBY",
+   "postCount": 7,
+   "outOfPrefecture": false,
+   "sources": [
+    {
+     "username": "tobby_free",
+     "url": "https://www.instagram.com/p/DezLD69PZvS/"
+    },
+    {
+     "username": "szokshantytown",
+     "url": "https://www.instagram.com/p/DfTzcQrHXks/"
+    },
+    {
+     "username": "gnarly_2000",
+     "url": "https://www.instagram.com/p/DfE3r9OSp_u/"
+    },
+    {
+     "username": "szokshantytown",
+     "url": "https://www.instagram.com/p/DewvkSsEmzN/"
+    },
+    {
+     "username": "spiceandchillsquad",
+     "url": "https://www.instagram.com/p/Dfj-8g8DnjY/"
+    },
+    {
+     "username": "szokshantytown",
+     "url": "https://www.instagram.com/p/DfmVl4CEisJ/"
+    },
+    {
+     "username": "szokshantytown",
+     "url": "https://www.instagram.com/p/DfgpcZJnReN/"
+    }
+   ]
+  },
+  {
+   "id": "ev6",
+   "title": "DOON VYBZ Vol.2",
+   "date": "2026-11-28",
+   "weekday": "土",
+   "startTime": "OPEN 22:00 - CLOSE 5:00",
+   "price": "TICKET ¥2,500 + 1DRINK ¥500",
+   "priceCorrected": false,
+   "genre": "レゲエ含む",
+   "genreKey": "includes",
+   "venue": "CORNER sound bar",
+   "area": "沼津",
+   "address": "静岡県沼津市高島町6-10 高島ビル4F",
+   "artists": "DJ Moe Chan Doon",
+   "postCount": 3,
+   "outOfPrefecture": false,
+   "sources": [
+    {
+     "username": "mo_e.0817",
+     "url": "https://www.instagram.com/p/DfH5vToTbGZ/"
+    },
+    {
+     "username": "corner_sound_bar",
+     "url": "https://www.instagram.com/p/DevNKHZB74S/"
+    },
+    {
+     "username": "spiceandchillsquad",
+     "url": "https://www.instagram.com/p/Dfj_ndKDqHK/"
+    }
+   ]
+  },
+  {
    "id": "ev1",
    "title": "THREE ISLAND REGGAE VOL.29",
    "date": "2026-11-29",
@@ -371,7 +376,7 @@
    "area": "三島",
    "address": "静岡県三島市広小路町9-13 野村ビル1階",
    "artists": "keigo, NASTY NARU fr NEIGHBOR BEATZ, TAKUMAPIZZA, SAGARAggaBASS, BROTHERHOOD with SoundSystem, TOBBY, Chari, COOKING MELODY",
-   "postCount": 4,
+   "postCount": 5,
    "outOfPrefecture": false,
    "sources": [
     {
@@ -389,6 +394,33 @@
     {
      "username": "gnarly_2000",
      "url": "https://www.instagram.com/p/DfZ1yPSSSrJ/"
+    },
+    {
+     "username": "spiceandchillsquad",
+     "url": "https://www.instagram.com/p/DfkASOljvca/"
+    }
+   ]
+  },
+  {
+   "id": "ev131",
+   "title": "RAGGAMUFFIN CONNECTION",
+   "date": "2026-12-05",
+   "weekday": "土",
+   "startTime": "Start21:00 Close26:30",
+   "price": "前売り¥2,000 + 1D Order、当日¥2,500 + 1D Order",
+   "priceCorrected": false,
+   "genre": "レゲエ含む",
+   "genreKey": "includes",
+   "venue": "KICKERS",
+   "area": "富士",
+   "address": "静岡県富士市吉原2-11-8 2F",
+   "artists": "ERIKA CRYMSON, UJ, SUNRISE, WAH A GWAAN VIBES, BROTHERHOOD, Sista Raybo, MUNCHIES DISCO",
+   "postCount": 1,
+   "outOfPrefecture": false,
+   "sources": [
+    {
+     "username": "mystmunchies",
+     "url": "https://www.instagram.com/p/DfBhgTfErMo/"
     }
    ]
   },
@@ -432,29 +464,6 @@
    ]
   },
   {
-   "id": "ev131",
-   "title": "RAGGAMUFFIN CONNECTION",
-   "date": "2026-12-05",
-   "weekday": "土",
-   "startTime": "Start21:00 Close26:30",
-   "price": "前売り¥2,000 + 1D Order、当日¥2,500 + 1D Order",
-   "priceCorrected": false,
-   "genre": "レゲエ含む",
-   "genreKey": "includes",
-   "venue": "KICKERS",
-   "area": "富士",
-   "address": "静岡県富士市吉原2-11-8 2F",
-   "artists": "ERIKA CRYMSON, UJ, SUNRISE, WAH A GWAAN VIBES, BROTHERHOOD, Sista Raybo, MUNCHIES DISCO",
-   "postCount": 1,
-   "outOfPrefecture": false,
-   "sources": [
-    {
-     "username": "mystmunchies",
-     "url": "https://www.instagram.com/p/DfBhgTfErMo/"
-    }
-   ]
-  },
-  {
    "id": "ev142",
    "title": "宴 -en- LIVE",
    "date": "2026-12-19",
@@ -479,7 +488,7 @@
   },
   {
    "id": "ev10",
-   "title": "SPICE & CHILL -Lounge Session-",
+   "title": "SPICE & CHILL",
    "date": "2026-12-20",
    "weekday": "日",
    "startTime": "15:00-22:00",
@@ -489,14 +498,22 @@
    "genreKey": "reggae",
    "venue": "WOODY CLOUD",
    "area": "静岡",
-   "address": "静岡県静岡市葵区両替町2-6-4 JADEビル2F",
+   "address": "静岡市葵区両替町2-6-4 JADEビル2F",
    "artists": "GNARLY from BROTHERHOOD, KIBA-K, KOTA, TOBBY",
-   "postCount": 1,
+   "postCount": 3,
    "outOfPrefecture": false,
    "sources": [
     {
      "username": "tobby_free",
      "url": "https://www.instagram.com/p/Dfe_BFOPo4a/"
+    },
+    {
+     "username": "spiceandchillsquad",
+     "url": "https://www.instagram.com/p/Dfj1FjGj45G/"
+    },
+    {
+     "username": "spiceandchillsquad",
+     "url": "https://www.instagram.com/p/Dfj0uhbj4_K/"
     }
    ]
   },
@@ -560,7 +577,7 @@
    "lat": 35.11853067,
    "lng": 138.91042896,
    "isReggaeVenue": true,
-   "upcomingCount": 6
+   "upcomingCount": 5
   },
   {
    "key": "oneblood",
