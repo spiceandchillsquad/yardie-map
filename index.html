@@ -10,6 +10,7 @@
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="favicon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
   :root{
     --bg:#14120e;
@@ -45,14 +46,69 @@
     border-image:linear-gradient(90deg,var(--green) 0 33%,var(--gold) 33% 66%,var(--red) 66% 100%) 1;
     padding:16px 16px 12px;
     position:sticky;top:0;z-index:30;
+    text-align:center;
   }
   header.site .brand{
     display:inline-block;background:#fff;border-radius:10px;
     padding:8px 14px 6px;line-height:0;
   }
   header.site .brand img{height:52px;width:auto;display:block}
-  header.site .sub{font-size:13px;color:var(--text);margin-top:1px}
-  header.site .meta{font-size:11.5px;color:var(--muted);margin-top:5px}
+  header.site .sub{font-size:13px;color:var(--text);margin-top:6px}
+  /* ---------- home ---------- */
+  .hero{text-align:center;padding:26px 10px 6px}
+  .hero .hero-logo{
+    display:inline-block;background:#fff;border-radius:14px;
+    padding:14px 18px 10px;line-height:0;
+  }
+  .hero .hero-logo img{width:min(300px,72vw);height:auto;display:block}
+  .hero .hero-sub{font-size:15px;font-weight:700;margin-top:14px}
+  .hero .hero-lead{font-size:13px;color:var(--muted);margin-top:5px;line-height:1.7}
+  .home-sec{margin-top:24px}
+  .home-sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 10px}
+  .home-sec-head h2{font-size:16.5px;font-weight:800}
+  .home-sec-head button{
+    background:none;border:none;color:var(--gold);font-size:13px;cursor:pointer;padding:2px 0;
+  }
+  .card .date-line{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:4px}
+  .card .date-line .dow-sat{color:#7db4e8}
+  .card .date-line .dow-sun{color:var(--red)}
+  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .menu-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 14px;cursor:pointer;text-align:left;color:var(--text);
+    display:flex;flex-direction:column;gap:4px;font-family:inherit;
+  }
+  .menu-card:active{background:var(--panel2)}
+  .menu-card .ic{font-size:24px;line-height:1.2}
+  .menu-card .t{font-size:15.5px;font-weight:700}
+  .menu-card .d{font-size:12px;color:var(--muted);line-height:1.5}
+  .venue-mini{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:11px 14px;margin-bottom:8px;cursor:pointer;
+    display:flex;align-items:center;gap:10px;
+  }
+  .venue-mini:active{background:var(--panel2)}
+  .venue-mini .nm{font-weight:700;font-size:15px}
+  .venue-mini .ar{color:var(--muted);font-size:12.5px}
+  .venue-mini .cnt{margin-left:auto;font-size:12.5px;color:var(--gold);white-space:nowrap}
+  /* ---------- map ---------- */
+  #map{height:62vh;min-height:340px;border-radius:var(--radius);margin-top:12px;z-index:1}
+  .pin-count{
+    background:var(--green-d);color:#fff;border:2px solid #fff;border-radius:999px;
+    font-size:12.5px;font-weight:800;text-align:center;line-height:26px;
+    box-shadow:0 1px 5px rgba(0,0,0,.45);
+  }
+  .pin-plain{
+    background:#6d675a;color:#fff;border:2px solid #fff;border-radius:999px;
+    font-size:11px;text-align:center;line-height:18px;
+    box-shadow:0 1px 5px rgba(0,0,0,.45);
+  }
+  .leaflet-popup-content{font-size:13.5px;line-height:1.6}
+  .leaflet-popup-content .pv-name{font-weight:800;font-size:14.5px}
+  .leaflet-popup-content button{
+    margin-top:6px;background:var(--gold);color:#1a1503;border:none;border-radius:8px;
+    font-size:12.5px;font-weight:700;padding:5px 12px;cursor:pointer;
+  }
   /* ---------- layout ---------- */
   main{max-width:640px;margin:0 auto;padding:0 12px}
   .view{display:none}
@@ -220,12 +276,66 @@
 <header class="site">
   <div class="brand"><img src="logo-horizontal.svg" alt="YARDIE MAP — Your Yard. Your Dance."></div>
   <div class="sub">静岡レゲエイベント情報</div>
-  <div class="meta" id="header-meta">データを読み込み中…</div>
 </header>
 
 <main>
+  <!-- ======== HOME VIEW ======== -->
+  <section class="view active" id="view-home">
+    <div class="hero">
+      <div class="hero-logo"><img src="logo.svg" alt="YARDIE MAP — Your Yard. Your Dance."></div>
+      <div class="hero-sub">静岡のレゲエイベント、ここで見つかる。</div>
+      <div class="hero-lead">静岡県内のレゲエイベント情報を、Instagramの投稿から集めてお届けします。<br>初めての人も、ふらっとどうぞ。</div>
+    </div>
+
+    <div class="home-sec">
+      <div class="home-sec-head">
+        <h2>🌴 おすすめイベント</h2>
+        <button type="button" data-goto="list">すべて見る ›</button>
+      </div>
+      <div id="home-reco"></div>
+    </div>
+
+    <div class="home-sec">
+      <div class="home-sec-head">
+        <h2>📅 直近のイベント</h2>
+        <button type="button" data-goto="list">すべて見る ›</button>
+      </div>
+      <div id="home-soon"></div>
+    </div>
+
+    <div class="home-sec">
+      <div class="home-sec-head"><h2>🧭 さがす</h2></div>
+      <div class="menu-grid">
+        <button type="button" class="menu-card" data-goto="list">
+          <span class="ic">🎶</span><span class="t">イベント一覧</span>
+          <span class="d">日付順の一覧。検索・絞り込みもできます</span>
+        </button>
+        <button type="button" class="menu-card" data-goto="calendar">
+          <span class="ic">📅</span><span class="t">カレンダー</span>
+          <span class="d">月表示で開催日をチェック</span>
+        </button>
+        <button type="button" class="menu-card" data-goto="map">
+          <span class="ic">🗺</span><span class="t">マップ</span>
+          <span class="d">会場の場所と今後の開催件数を地図で</span>
+        </button>
+        <button type="button" class="menu-card" data-goto="venues">
+          <span class="ic">📍</span><span class="t">店舗Index</span>
+          <span class="d">会場の一覧。タップでその会場のイベントへ</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="home-sec">
+      <div class="home-sec-head">
+        <h2>📍 注目の会場</h2>
+        <button type="button" data-goto="venues">店舗Index ›</button>
+      </div>
+      <div id="home-venues"></div>
+    </div>
+  </section>
+
   <!-- ======== LIST VIEW ======== -->
-  <section class="view active" id="view-list">
+  <section class="view" id="view-list">
     <div class="filters">
       <input type="search" id="f-keyword" placeholder="検索（タイトル・会場・出演者）" autocomplete="off">
       <div class="row">
@@ -267,18 +377,28 @@
     <div id="venue-list"></div>
   </section>
 
+  <!-- ======== MAP VIEW ======== -->
+  <section class="view" id="view-map">
+    <div class="result-count">ピンの数字は、その会場の今後の開催件数です</div>
+    <div id="map"></div>
+    <div class="empty" id="map-fallback" style="display:none">地図を読み込めませんでした。通信環境をご確認ください。会場の一覧は「店舗Index」から見られます。</div>
+  </section>
+
   <div class="loading" id="loading">読み込み中…</div>
   <div class="load-error" id="load-error" style="display:none">データを読み込めませんでした。通信環境をご確認のうえ、再読み込みしてください。</div>
 </main>
 
 <footer class="site">
+  <span id="footer-meta">データを読み込み中…</span><br>
   情報はInstagram投稿をもとに作成しています。内容が変更になる場合がありますので、最新情報は出典のInstagram投稿でご確認ください。<br>
   YARDIE MAP — 静岡レゲエイベント情報（非公式ガイド）
 </footer>
 
 <nav class="tabs" aria-label="ビュー切替">
-  <button type="button" data-view="list" class="active"><span class="ic">🎶</span>イベント</button>
+  <button type="button" data-view="home" class="active"><span class="ic">🏠</span>ホーム</button>
+  <button type="button" data-view="list"><span class="ic">🎶</span>イベント</button>
   <button type="button" data-view="calendar"><span class="ic">📅</span>カレンダー</button>
+  <button type="button" data-view="map"><span class="ic">🗺</span>マップ</button>
   <button type="button" data-view="venues"><span class="ic">📍</span>会場</button>
 </nav>
 
@@ -286,6 +406,7 @@
   <div class="modal" role="dialog" aria-modal="true" id="modal"></div>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 "use strict";
 /* =============== state =============== */
@@ -647,6 +768,107 @@ function switchView(name){
   document.querySelectorAll("nav.tabs button").forEach(function(b){
     b.classList.toggle("active", b.getAttribute("data-view") === name);
   });
+  if (name === "map") initMap();
+}
+
+/* =============== home view =============== */
+function makeHomeCard(ev){
+  var card = makeCard(ev);
+  var dl = el("div", "date-line");
+  dl.appendChild(el("span", dowClass(ev.weekday), fmtDateHead(ev.date, ev.weekday)));
+  card.insertBefore(dl, card.firstChild);
+  return card;
+}
+function renderHome(){
+  var upcoming = DATA.events.filter(isUpcoming).sort(function(a, b){
+    if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+    return (a.startTime || "") < (b.startTime || "") ? -1 : 1;
+  });
+  // おすすめ: レゲエ中心を優先し、近い日付順に3件
+  var reco = upcoming.filter(function(ev){ return ev.genreKey === "reggae"; }).slice(0, 3);
+  if (reco.length < 3){
+    upcoming.forEach(function(ev){
+      if (reco.length >= 3) return;
+      if (reco.indexOf(ev) === -1) reco.push(ev);
+    });
+  }
+  var recoWrap = document.getElementById("home-reco");
+  recoWrap.textContent = "";
+  if (!reco.length) recoWrap.appendChild(el("div", "empty", "今後のイベントは準備中です。"));
+  reco.forEach(function(ev){ recoWrap.appendChild(makeHomeCard(ev)); });
+
+  var soonWrap = document.getElementById("home-soon");
+  soonWrap.textContent = "";
+  upcoming.slice(0, 4).forEach(function(ev){ soonWrap.appendChild(makeHomeCard(ev)); });
+
+  var vWrap = document.getElementById("home-venues");
+  vWrap.textContent = "";
+  DATA.venues.slice().sort(function(a, b){
+    return (b.upcomingCount || 0) - (a.upcomingCount || 0) || a.name.localeCompare(b.name);
+  }).slice(0, 3).forEach(function(v){
+    var row = el("div", "venue-mini");
+    var left = el("div");
+    left.appendChild(el("span", "nm", v.name));
+    if (v.area) left.appendChild(el("div", "ar", v.area));
+    row.appendChild(left);
+    row.appendChild(el("span", "cnt", "今後 " + (v.upcomingCount || 0) + " 件"));
+    row.addEventListener("click", function(){ switchView("venues"); window.scrollTo(0, 0); });
+    vWrap.appendChild(row);
+  });
+}
+
+/* =============== map view =============== */
+var leafletMap = null;
+function initMap(){
+  var fallback = document.getElementById("map-fallback");
+  if (typeof L === "undefined"){
+    document.getElementById("map").style.display = "none";
+    fallback.style.display = "block";
+    return;
+  }
+  if (leafletMap){
+    setTimeout(function(){ leafletMap.invalidateSize(); }, 60);
+    return;
+  }
+  leafletMap = L.map("map").setView([35.02, 138.35], 9);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 18,
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(leafletMap);
+  var bounds = [];
+  DATA.venues.forEach(function(v){
+    if (v.lat === null || v.lat === undefined || v.lng === null || v.lng === undefined) return;
+    var cnt = v.upcomingCount || 0;
+    var icon = L.divIcon({
+      className: "",
+      html: "<div class=\"" + (cnt > 0 ? "pin-count" : "pin-plain") + "\">" + (cnt > 0 ? cnt : "・") + "</div>",
+      iconSize: cnt > 0 ? [30, 30] : [22, 22],
+      iconAnchor: cnt > 0 ? [15, 15] : [11, 11]
+    });
+    var marker = L.marker([v.lat, v.lng], {icon: icon}).addTo(leafletMap);
+    var pop = document.createElement("div");
+    var nm = document.createElement("div");
+    nm.className = "pv-name";
+    nm.textContent = v.name;
+    pop.appendChild(nm);
+    pop.appendChild(document.createTextNode(
+      (v.area ? v.area + " ／ " : "") + "今後の開催 " + cnt + " 件"));
+    pop.appendChild(document.createElement("br"));
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "この会場のイベントを見る";
+    btn.addEventListener("click", function(){
+      state.venueName = v.name;
+      updateVenueChip();
+      renderList();
+      switchView("list");
+      window.scrollTo(0, 0);
+    });
+    pop.appendChild(btn);
+    marker.bindPopup(pop);
+    bounds.push([v.lat, v.lng]);
+  });
+  if (bounds.length) leafletMap.fitBounds(bounds, {padding: [28, 28]});
 }
 
 /* =============== init =============== */
@@ -654,9 +876,9 @@ function init(data){
   DATA = data;
   DATA.venues.forEach(function(v){ venueByName[v.name] = v; });
 
-  document.getElementById("header-meta").textContent =
-    "📅 " + DATA.generatedAt + " 更新 ／ 出典：Instagram投稿（投稿" +
-    DATA.events.reduce(function(s, e){ return s + (e.postCount || 0); }, 0) + "件）";
+  document.getElementById("footer-meta").textContent =
+    "📅 " + DATA.generatedAt.slice(0, 10) + " 更新 ／ 出典：Instagram投稿（投稿" +
+    DATA.events.reduce(function(s, e){ return s + (e.postCount || 0); }, 0) + "件から作成）";
 
   // area select (from events, in-prefecture areas first by count)
   var areaSel = document.getElementById("f-area");
@@ -676,6 +898,7 @@ function init(data){
   state.calYear = parseInt(gp[0], 10);
   state.calMonth = parseInt(gp[1], 10) - 1;
 
+  renderHome();
   renderList();
   renderCalendar();
   renderVenues();
@@ -699,6 +922,12 @@ document.getElementById("venue-chip-clear").addEventListener("click", function()
 });
 document.querySelectorAll("nav.tabs button").forEach(function(b){
   b.addEventListener("click", function(){ switchView(b.getAttribute("data-view")); });
+});
+document.querySelectorAll("[data-goto]").forEach(function(b){
+  b.addEventListener("click", function(){
+    switchView(b.getAttribute("data-goto"));
+    window.scrollTo(0, 0);
+  });
 });
 document.getElementById("cal-prev").addEventListener("click", function(){
   state.calMonth--; if (state.calMonth < 0){ state.calMonth = 11; state.calYear--; }
