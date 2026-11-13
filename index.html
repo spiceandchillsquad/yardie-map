@@ -784,10 +784,11 @@ function renderHome(){
     if (a.date !== b.date) return a.date < b.date ? -1 : 1;
     return (a.startTime || "") < (b.startTime || "") ? -1 : 1;
   });
-  // おすすめ: レゲエ中心を優先し、近い日付順に3件
-  var reco = upcoming.filter(function(ev){ return ev.genreKey === "reggae"; }).slice(0, 3);
+  // おすすめ: 県内イベントに限定し、レゲエ中心を優先して近い日付順に3件
+  var inPref = upcoming.filter(function(ev){ return !ev.outOfPrefecture; });
+  var reco = inPref.filter(function(ev){ return ev.genreKey === "reggae"; }).slice(0, 3);
   if (reco.length < 3){
-    upcoming.forEach(function(ev){
+    inPref.forEach(function(ev){
       if (reco.length >= 3) return;
       if (reco.indexOf(ev) === -1) reco.push(ev);
     });
