@@ -3,7 +3,7 @@
    - data/data.json: network-first (fresh data preferred, cache fallback) */
 "use strict";
 
-var CACHE_NAME = "yardie-map-v5";
+var CACHE_NAME = "yardie-map-v6";
 var SHELL = ["./", "./index.html", "./manifest.json", "./logo.svg", "./logo-horizontal.svg", "./favicon-192.png"];
 
 self.addEventListener("install", function (event) {
