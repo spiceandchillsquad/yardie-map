@@ -109,6 +109,41 @@
     margin-top:6px;background:var(--gold);color:#1a1503;border:none;border-radius:8px;
     font-size:12.5px;font-weight:700;padding:5px 12px;cursor:pointer;
   }
+  /* ---------- performers ---------- */
+  .perf-tools{margin:12px 0 4px;display:flex;flex-direction:column;gap:8px}
+  .perf-tools input[type="search"]{
+    width:100%;padding:10px 12px;border-radius:10px;
+    border:1px solid var(--line);background:var(--bg2);color:var(--text);
+    font-size:15px;appearance:none;-webkit-appearance:none;
+  }
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{
+    background:var(--panel);border:1px solid var(--line);color:var(--muted);
+    border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit;
+  }
+  .chip.active{background:var(--gold);color:#1a1503;border-color:var(--gold);font-weight:700}
+  .perf-row{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:11px 14px;margin-bottom:8px;cursor:pointer;
+  }
+  .perf-row:active{background:var(--panel2)}
+  .perf-row .nm{font-weight:700;font-size:15.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .badge.kind-person{background:#33302a;color:#e6e1d2;border:1px solid var(--line)}
+  .badge.kind-group{background:var(--green-d);color:#d9f5df}
+  .badge.role{background:none;border:1px solid var(--gold-d);color:var(--gold)}
+  .perf-row .sub2{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .perf-row .cnt{font-size:12.5px;color:var(--gold);margin-top:5px}
+  .back-btn{
+    background:var(--panel);border:1px solid var(--line);color:var(--text);
+    border-radius:10px;padding:7px 14px;font-size:13.5px;cursor:pointer;margin:14px 0 4px;
+  }
+  .perf-head h2{font-size:21px;font-weight:800;line-height:1.35;margin:8px 0 6px}
+  .perf-bio{
+    white-space:pre-wrap;font-size:13.5px;color:var(--text);
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:12px 14px;margin:12px 0;line-height:1.7;
+  }
+  .ig-link{display:inline-block;margin:8px 0 4px;font-size:14.5px;font-weight:700}
   /* ---------- layout ---------- */
   main{max-width:640px;margin:0 auto;padding:0 12px}
   .view{display:none}
@@ -322,6 +357,10 @@
           <span class="ic">📍</span><span class="t">店舗Index</span>
           <span class="d">会場の一覧。タップでその会場のイベントへ</span>
         </button>
+        <button type="button" class="menu-card" data-goto="performers">
+          <span class="ic">🎤</span><span class="t">出演者Index</span>
+          <span class="d">セレクターやサウンドの一覧。今後の出演も分かります</span>
+        </button>
       </div>
     </div>
 
@@ -377,6 +416,26 @@
     <div id="venue-list"></div>
   </section>
 
+  <!-- ======== PERFORMERS VIEW ======== -->
+  <section class="view" id="view-performers">
+    <div class="perf-tools">
+      <input type="search" id="p-keyword" placeholder="検索（名前・所属・Instagram）" autocomplete="off">
+      <div class="chip-row" id="p-kind-row">
+        <button type="button" class="chip active" data-kind="">すべて</button>
+        <button type="button" class="chip" data-kind="person">個人</button>
+        <button type="button" class="chip" data-kind="group">サウンド・クルー</button>
+      </div>
+    </div>
+    <div class="result-count" id="perf-count"></div>
+    <div id="perf-list"></div>
+  </section>
+
+  <!-- ======== PERFORMER DETAIL VIEW ======== -->
+  <section class="view" id="view-performer">
+    <button type="button" class="back-btn" id="perf-back">‹ 出演者Indexに戻る</button>
+    <div id="perf-detail"></div>
+  </section>
+
   <!-- ======== MAP VIEW ======== -->
   <section class="view" id="view-map">
     <div class="result-count">ピンの数字は、その会場の今後の開催件数です</div>
@@ -400,6 +459,7 @@
   <button type="button" data-view="calendar"><span class="ic">📅</span>カレンダー</button>
   <button type="button" data-view="map"><span class="ic">🗺</span>マップ</button>
   <button type="button" data-view="venues"><span class="ic">📍</span>会場</button>
+  <button type="button" data-view="performers"><span class="ic">🎤</span>出演者</button>
 </nav>
 
 <div class="modal-back" id="modal-back">
@@ -418,6 +478,8 @@ var state = {
   genre: "",
   inPrefOnly: false,
   venueName: null,          // venue filter from venue list
+  perfKeyword: "",
+  perfKind: "",
   calYear: null, calMonth: null, // 0-based month
   calSelected: null         // 'YYYY-MM-DD'
 };
@@ -440,7 +502,7 @@ function dowClass(weekday){
   return "";
 }
 function isUpcoming(ev){
-  return ev.date >= DATA.generatedAt;
+  return ev.date >= DATA.today;
 }
 function mapsUrl(ev){
   var v = venueByName[ev.venue];
@@ -650,7 +712,7 @@ function renderCalendar(){
   var startDow = first.getDay();
   var daysInMonth = new Date(y, m + 1, 0).getDate();
   var daysInPrev = new Date(y, m, 0).getDate();
-  var todayStr = DATA.generatedAt;
+  var todayStr = DATA.today;
   var cellCount = Math.ceil((startDow + daysInMonth) / 7) * 7;
 
   var row = el("tr");
@@ -759,6 +821,92 @@ function updateVenueChip(){
   } else {
     chip.classList.remove("show");
   }
+}
+
+/* =============== performers view =============== */
+var KIND_JA = {person: "個人", group: "サウンド・クルー"};
+function renderPerformers(){
+  var wrap = document.getElementById("perf-list");
+  wrap.textContent = "";
+  var kw = state.perfKeyword.trim().toLowerCase();
+  var list = (DATA.performers || []).filter(function(p){
+    if (state.perfKind && p.kind !== state.perfKind) return false;
+    if (kw){
+      var hay = (p.name + " " + (p.affiliation || "") + " " + (p.instagram || "")).toLowerCase();
+      if (hay.indexOf(kw) === -1) return false;
+    }
+    return true;
+  });
+  document.getElementById("perf-count").textContent = "出演者 " + list.length + " 件";
+  if (!list.length){
+    wrap.appendChild(el("div", "empty", "条件に合う出演者が見つかりませんでした。"));
+    return;
+  }
+  list.forEach(function(p){
+    var row = el("div", "perf-row");
+    var nm = el("div", "nm", p.name);
+    if (p.kind && KIND_JA[p.kind]){
+      nm.appendChild(el("span", "badge kind-" + p.kind, KIND_JA[p.kind]));
+    }
+    row.appendChild(nm);
+    var bits = [];
+    if (p.affiliation) bits.push(p.affiliation);
+    if (p.instagram) bits.push("@" + p.instagram);
+    if (bits.length) row.appendChild(el("div", "sub2", bits.join(" ／ ")));
+    if (p.roles && p.roles.length){
+      var rw = el("div", "badges");
+      p.roles.forEach(function(r){ rw.appendChild(el("span", "badge role", r)); });
+      row.appendChild(rw);
+    }
+    row.appendChild(el("div", "cnt",
+      "今後の出演 " + p.upcomingCount + " 件" + (p.pastCount ? " ・ これまで " + p.pastCount + " 件" : "")));
+    row.addEventListener("click", function(){ openPerformer(p.key); });
+    wrap.appendChild(row);
+  });
+}
+function openPerformer(key){
+  var p = null;
+  (DATA.performers || []).forEach(function(x){ if (x.key === key) p = x; });
+  if (!p) return;
+  var wrap = document.getElementById("perf-detail");
+  wrap.textContent = "";
+  var head = el("div", "perf-head");
+  var h = el("h2", null, p.name);
+  head.appendChild(h);
+  var badges = el("div", "badges");
+  if (p.kind && KIND_JA[p.kind]) badges.appendChild(el("span", "badge kind-" + p.kind, KIND_JA[p.kind]));
+  (p.roles || []).forEach(function(r){ badges.appendChild(el("span", "badge role", r)); });
+  if (badges.childNodes.length) head.appendChild(badges);
+  if (p.affiliation) head.appendChild(el("div", "sub2", "所属：" + p.affiliation));
+  wrap.appendChild(head);
+  if (p.instagram){
+    var ig = el("a", "ig-link", "📷 @" + p.instagram + " をInstagramで開く");
+    ig.href = "https://www.instagram.com/" + p.instagram + "/";
+    ig.target = "_blank"; ig.rel = "noopener";
+    wrap.appendChild(ig);
+  }
+  if (p.bio) wrap.appendChild(el("div", "perf-bio", p.bio));
+  var sec = el("div", "home-sec");
+  sec.appendChild(el("div", "home-sec-head"));
+  sec.firstChild.appendChild(el("h2", null, "🎶 今後の出演"));
+  wrap.appendChild(sec);
+  var evWrap = el("div");
+  var byId = {};
+  DATA.events.forEach(function(ev){ byId[ev.id] = ev; });
+  var found = 0;
+  (p.upcoming || []).forEach(function(id){
+    var ev = byId[id];
+    if (!ev) return;
+    evWrap.appendChild(makeHomeCard(ev));
+    found++;
+  });
+  if (!found) evWrap.appendChild(el("div", "empty", "現在、公開中の出演予定はありません。"));
+  wrap.appendChild(evWrap);
+  if (p.pastCount){
+    wrap.appendChild(el("div", "result-count", "これまでの出演 " + p.pastCount + " 件（YARDIE MAPの記録より）"));
+  }
+  switchView("performer");
+  window.scrollTo(0, 0);
 }
 
 /* =============== view switching =============== */
@@ -903,6 +1051,7 @@ function init(data){
   renderList();
   renderCalendar();
   renderVenues();
+  renderPerformers();
   document.getElementById("loading").style.display = "none";
 }
 
@@ -920,6 +1069,20 @@ document.getElementById("f-inpref").addEventListener("change", function(e){
 });
 document.getElementById("venue-chip-clear").addEventListener("click", function(){
   state.venueName = null; updateVenueChip(); renderList();
+});
+document.getElementById("p-keyword").addEventListener("input", function(e){
+  state.perfKeyword = e.target.value; renderPerformers();
+});
+document.querySelectorAll("#p-kind-row .chip").forEach(function(c){
+  c.addEventListener("click", function(){
+    document.querySelectorAll("#p-kind-row .chip").forEach(function(x){ x.classList.remove("active"); });
+    c.classList.add("active");
+    state.perfKind = c.getAttribute("data-kind");
+    renderPerformers();
+  });
+});
+document.getElementById("perf-back").addEventListener("click", function(){
+  switchView("performers");
 });
 document.querySelectorAll("nav.tabs button").forEach(function(b){
   b.addEventListener("click", function(){ switchView(b.getAttribute("data-view")); });
